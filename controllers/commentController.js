@@ -35,6 +35,7 @@ exports.addComment = async (req, res) => {
     if (req.user) {
       req.body.user_id = req.user.id
     }
+    console.log(req.body)
     const columns = Object.keys(req.body).join(", ")
     const values = Object.values(req.body)
       .map((value) => `'${value}'`)
@@ -57,14 +58,13 @@ exports.updateComment = async (req, res) => {
     const comment = await connection.dbQuery(
       `select * from comment where id = ${req.params.commentId} and user_id = ${req.user.id}`
     )
-    if (comment.rows.length == 0) {
+    if (comment.rows.length == 0 && req.user.role == "user") {
       return res.status(403).json({
         status: "fail",
         message: "you don't own this comment to update it",
       })
     }
     const q = query.updateOneWhereId("comment", req.body, req.params.commentId)
-    console.log(q, req.params)
     const result = await connection.dbQuery(q)
     res.status(200).json({ status: "successful", data: result.rows })
   } catch (err) {
@@ -83,7 +83,7 @@ exports.deleteComment = async (req, res) => {
     const comment = await connection.dbQuery(
       `select * from comment where id = ${commentId} and user_id = ${req.user.id}`
     )
-    if (comment.rows.length == 0) {
+    if (comment.rows.length == 0 && req.user.role == "user") {
       return res.status(403).json({
         status: "fail",
         message: "you don't own this comment to delete it",

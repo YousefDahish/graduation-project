@@ -46,17 +46,14 @@ exports.queryList = {
     JOIN "user" as u ON s.user_id = u.id
     ORDER BY random();`,
 
-
-
-
-  SAVE_RATING_QUERY:'INSERT INTO rating (score,clinic_id,user_id ) VALUES ($1,$2,$3)',
-  UPDATE_RATING_QUERY:'UPDATE rating SET score=$1 WHERE id=$2',
+  SAVE_RATING_QUERY:
+    "INSERT INTO rating (score,clinic_id,user_id ) VALUES ($1,$2,$3) returning *",
+  UPDATE_RATING_QUERY: "UPDATE rating SET score=$1 WHERE id=$2 returning *",
 
   //comment
   SAVE_COMMENT_QUERY:
     "INSERT INTO comment (text,pet_id,user_id) VALUES ($1,$2,$3) returning * ;",
   UPDATE_COMMENT_QUERY: "UPDATE comment SET text=$1 WHERE id=$2 returning * ;",
-
 }
 exports.DDLQuery = {
   CREATE_pet_type: "CREATE TYPE pet_type AS ENUM ('dog', 'cat', 'other');",

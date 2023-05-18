@@ -30,6 +30,7 @@ exports.addClinic = async (req, res) => {
     if (req.file) {
       req.body.image_url = req.file.path
     }
+    console.log(req.body)
     const columns = Object.keys(req.body).join(", ")
     const values = Object.values(req.body)
       .map((value) => `'${value}'`)

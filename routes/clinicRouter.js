@@ -1,15 +1,28 @@
-var express = require("express")
+const express = require("express")
 const router = express.Router()
-var clinicController = require("../controllers/clinicController")
+const clinicController = require("../controllers/clinicController")
+const authController = require("./../controllers/authController")
 
 router
   .route("/")
   .get(clinicController.getClinicList)
-  .post(clinicController.addClinic)
+  .post(
+    authController.protect,
+    authController.restrictTo("admin"),
+    clinicController.addClinic
+  )
 router
   .route("/:clinicId")
-  .patch(clinicController.updateClinic)
-  .delete(clinicController.deleteClinic)
   .get(clinicController.getClinic)
+  .patch(
+    authController.protect,
+    authController.restrictTo("admin"),
+    clinicController.updateClinic
+  )
+  .delete(
+    authController.protect,
+    authController.restrictTo("admin"),
+    clinicController.deleteClinic
+  )
 
 module.exports = router

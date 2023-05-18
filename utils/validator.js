@@ -55,3 +55,12 @@ exports.getRandomArray = (arr) => {
   const copy = arr.slice()
   return (shuffled = copy.sort(() => Math.random() - 0.5))
 }
+exports.isOwner = async (table, id, user_id) => {
+  const record = await pool.query(
+    `select * from "${table}" where id = ${id} and user_id = ${user_id}`
+  )
+  if (record.rows.length == 0) {
+    return false
+  }
+  return true
+}

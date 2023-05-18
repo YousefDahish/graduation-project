@@ -1,17 +1,35 @@
-var express = require("express")
+const express = require("express")
 const router = express.Router({ mergeParams: true })
-var solidController = require("../controllers/solidController")
+const solidController = require("../controllers/solidController")
 const authController = require("./../controllers/authController")
+const multer = require("multer")
+
+const { storage } = require("./../utils/cloudinary")
+
+const upload = multer({ storage: storage("photos/pets") })
 
 router.post("/like", authController.protect, solidController.addLike)
+
 router
-  .route("/")
+  .route("/mine")
+  .all(authController.protect)
+  .get(solidController.getUserSolid)
+  .post(upload.single("image"), solidController.addSolid)
+router
+  .route("/all")
   .get(solidController.getSolidList)
-  .post(solidController.addSolid)
+  .post(
+    authController.protect,
+    authController.restrictTo("admin"),
+    solidController.addSolid
+  )
+router.get("/", (req, res) => {
+  res.redirect("/solid/all")
+})
 router
   .route("/:solidId")
-  .patch(solidController.updateSolid)
-  .delete(solidController.deleteSolid)
   .get(solidController.getSolid)
+  .patch(authController.protect, solidController.updateSolid)
+  .delete(authController.protect, solidController.deleteSolid)
 
 module.exports = router

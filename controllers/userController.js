@@ -77,7 +77,10 @@ exports.updateUser = async (req, res) => {
         .status(404)
         .json({ status: "fail", message: "please provide valid id" })
     }
-    const updateQuery = query.updateOneWhereId("user", req.body, userId)
+    const adjustBody = req.body
+    delete adjustBody.password
+    delete adjustBody.password_confirm
+    const updateQuery = query.updateOneWhereId("user", adjustBody, userId)
     const result = await connection.dbQuery(updateQuery)
     res.status(200).json({ status: "successful", data: result.rows })
   } catch (err) {

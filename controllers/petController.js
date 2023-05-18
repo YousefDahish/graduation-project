@@ -1,12 +1,29 @@
 var query = require("../db/query")
 var connection = require("../db/connection")
-
+const validator = require("./../utils/validator")
 exports.getPetList = async (req, res) => {
   try {
     const result = await connection.dbQuery(query.queryList.GET_PET_LIST_QUERY)
     res.status(200).json({ status: "successful", data: result.rows })
   } catch (err) {
     res.status(400).send({ error: `Failed to list pet; ${err.message}` })
+  }
+}
+exports.getUserPets = async (req, res) => {
+  try {
+    if (!req.user.id) {
+      return res
+        .status(400)
+        .json({ status: "fail", message: "please provide user id" })
+    }
+    const result = await connection.dbQuery(
+      query.selectAllWhereQuery("pet", `user_id=${req.user.id}`)
+    )
+    res.status(200).json({ status: "successful", data: result.rows })
+  } catch (err) {
+    res
+      .status(400)
+      .json({ status: "fail", message: `can not get comments: ${err.message}` })
   }
 }
 exports.getPet = async (req, res) => {
@@ -27,18 +44,19 @@ exports.getPet = async (req, res) => {
   }
 }
 
-exports.getHome = async (req, res) => {}
-
 exports.addPet = async (req, res) => {
   try {
     if (req.file) {
       req.body.image_url = req.file.path
     }
+    if (req.user) {
+      req.body.user_id = req.user.id
+    }
+    console.log(req.body)
     const columns = Object.keys(req.body).join(", ")
     const values = Object.values(req.body)
       .map((value) => `'${value}'`)
       .join(", ")
-
     const result = await connection.dbQuery(
       query.insertQuery("pet", columns, values)
     )
@@ -55,14 +73,23 @@ exports.updatePet = async (req, res) => {
     }
     const petId = req.params.petId
     const body = req.body
+    console.log(req.body)
     // check if pet exist
     if (!(await connection.isExist(`pet`, petId))) {
       return res
         .status(404)
         .json({ status: "fail", message: "please provide valid id" })
     }
+    if (
+      !(await validator.isOwner("pet", petId, req.user.id)) &&
+      req.user.role == "user"
+    ) {
+      return res.status(403).json({
+        status: "fail",
+        message: "you don't own permissions to do this!",
+      })
+    }
     const updateQuery = query.updateOneWhereId("pet", body, petId)
-    console.log(updateQuery)
     const result = await connection.dbQuery(updateQuery)
 
     res.status(200).json({ status: "successful", data: result.rows })
@@ -76,6 +103,15 @@ exports.deletePet = async (req, res) => {
       return res
         .status(404)
         .json({ status: "fail", message: "please provide valid id" })
+    }
+    if (
+      !(await validator.isOwner("pet", req.params.petId, req.user.id)) &&
+      req.user.role == "user"
+    ) {
+      return res.status(403).json({
+        status: "fail",
+        message: "you don't own permissions to do this!",
+      })
     }
     await connection.dbQuery(query.deleteOneQuery("pet", req.params.petId))
     res.status(201).send("Successfully pet deleted ")

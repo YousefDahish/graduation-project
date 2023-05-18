@@ -1,5 +1,6 @@
-var query = require("../db/query")
-var connection = require("../db/connection")
+const query = require("../db/query")
+const connection = require("../db/connection")
+const validator = require("./../utils/validator")
 
 exports.getSolidList = async (req, res) => {
   try {
@@ -7,6 +8,23 @@ exports.getSolidList = async (req, res) => {
     res.status(200).json({ status: "successful", data: result.rows })
   } catch (err) {
     res.status(500).send({ error: "Failed to list solid" })
+  }
+}
+exports.getUserSolid = async (req, res) => {
+  try {
+    if (!req.user.id) {
+      return res
+        .status(400)
+        .json({ status: "fail", message: "please provide user id" })
+    }
+    const result = await connection.dbQuery(
+      query.selectAllWhereQuery("solid", `user_id=${req.user.id}`)
+    )
+    res.status(200).json({ status: "successful", data: result.rows })
+  } catch (err) {
+    res
+      .status(400)
+      .json({ status: "fail", message: `can not get comments: ${err.message}` })
   }
 }
 exports.getSolid = async (req, res) => {
@@ -30,6 +48,11 @@ exports.addSolid = async (req, res) => {
     if (req.file) {
       req.body.image_url = req.file.path
     }
+    if (req.user) {
+      req.body.user_id = req.user.id
+    }
+    console.log(req.body)
+
     const columns = Object.keys(req.body).join(", ")
     const values = Object.values(req.body)
       .map((value) => `'${value}'`)
@@ -53,6 +76,15 @@ exports.updateSolid = async (req, res) => {
         .status(404)
         .json({ status: "fail", message: "please provide valid id" })
     }
+    if (
+      !(await validator.isOwner("solid", solidId, req.user.id)) &&
+      req.user.role == "user"
+    ) {
+      return res.status(403).json({
+        status: "fail",
+        message: "you don't own permissions to do this!",
+      })
+    }
     const updateQuery = query.updateOneWhereId("solid", req.body, solidId)
     const result = await connection.dbQuery(updateQuery)
     res.status(200).json({ status: "successful", data: result.rows })
@@ -66,6 +98,15 @@ exports.deleteSolid = async (req, res) => {
       return res
         .status(404)
         .json({ status: "fail", message: "please provide valid id" })
+    }
+    if (
+      !(await validator.isOwner("solid", req.params.solidId, req.user.id)) &&
+      req.user.role == "user"
+    ) {
+      return res.status(403).json({
+        status: "fail",
+        message: "you don't own permissions to do this!",
+      })
     }
     await connection.dbQuery(query.deleteOneQuery("solid", req.params.solidId))
     res.status(201).send("Successfully solid deleted ")
