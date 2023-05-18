@@ -34,3 +34,5 @@ CREATE TABLE IF NOT EXISTS comment (
   user_id INTEGER NOT NULL REFERENCES "user"(id),
   pet_id INTEGER NOT NULL REFERENCES pet(id)
 );
+SELECT *
+from comment

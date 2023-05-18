@@ -15,7 +15,7 @@ router.get(
 )
 router
   .route("/:commentId")
-  .patch(commentsController.updateComment)
-  .delete(commentsController.deleteComment)
+  .patch(authController.protect, commentsController.updateComment)
+  .delete(authController.protect, commentsController.deleteComment)
 
 module.exports = router

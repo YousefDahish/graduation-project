@@ -1,17 +1,16 @@
 const express = require("express")
-var body_parser = require("body-parser")
+const body_parser = require("body-parser")
 const validator = require("./utils/validator")
 const pool = require("./db/pool")
 const morgan = require("morgan")
 const multer = require("multer")
-var petRoute = require("./routes/petRouter")
-var solidRoute = require("./routes/solidRouter")
-var clinicRoute = require("./routes/clinicRouter")
-var userRouter = require("./routes/userRouter")
+const petRoute = require("./routes/petRouter")
+const solidRoute = require("./routes/solidRouter")
+const clinicRoute = require("./routes/clinicRouter")
+const userRouter = require("./routes/userRouter")
 
-var ratingRouter = require("./routes/ratingRouter")
-var commentsRouter = require("./routes/commentsRouter")
-
+const ratingRouter = require("./routes/ratingRouter")
+const commentRouter = require("./routes/commentRouter")
 
 const { storage } = require("./utils/cloudinary")
 
@@ -42,12 +41,8 @@ app.use("/pet", petRoute)
 app.use("/solid", solidRoute)
 app.use("/clinic", clinicRoute)
 app.use("/user", userRouter)
-
-app.use("/comments",commentsRouter)
-app.use("/rating",ratingRouter)
-
-
-
+app.use("/comment", commentRouter)
+app.use("/rating", ratingRouter)
 
 app.use("/upload-image", upload.single("image"), (req, res, next) => {
   if (req.file) {

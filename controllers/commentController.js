@@ -7,7 +7,7 @@ exports.getPetComments = async (req, res) => {
     if (!pet_id) {
       return res
         .status(400)
-        .json({ status: "fail", message: "please provide a pet id in params" })
+        .json({ status: "fail", message: "please provide a pet id in query" })
     }
 
     const result = await connection.dbQuery(
@@ -49,13 +49,19 @@ exports.addComment = async (req, res) => {
 
 exports.updateComment = async (req, res) => {
   try {
-    const { text, id } = req.body
-
-    let values = [text, id]
-    if (!(await connection.isExist("comment", req.params.id))) {
+    if (!(await connection.isExist("comment", req.params.commentId))) {
       return res
         .status(404)
         .json({ status: "fail", message: "please provide valid id" })
+    }
+    const comment = await connection.dbQuery(
+      `select * from comment where id = ${req.params.commentId} and user_id = ${req.user.id}`
+    )
+    if (comment.rows.length == 0) {
+      return res.status(403).json({
+        status: "fail",
+        message: "you don't own this comment to update it",
+      })
     }
     const q = query.updateOneWhereId("comment", req.body, req.params.commentId)
     console.log(q, req.params)
@@ -66,13 +72,22 @@ exports.updateComment = async (req, res) => {
   }
 }
 exports.deleteComment = async (req, res) => {
-  const { id } = req.body
-  let values = [id]
+  const { commentId } = req.params
+  let values = [commentId]
   try {
-    if (!(await connection.isExist("comment", req.params.id))) {
+    if (!(await connection.isExist("comment", commentId))) {
       return res
         .status(404)
         .json({ status: "fail", message: "please provide valid id" })
+    }
+    const comment = await connection.dbQuery(
+      `select * from comment where id = ${commentId} and user_id = ${req.user.id}`
+    )
+    if (comment.rows.length == 0) {
+      return res.status(403).json({
+        status: "fail",
+        message: "you don't own this comment to delete it",
+      })
     }
     await connection.dbQuery(query.deleteOneQuery("comment", values))
     res.status(201).send("Successfully comment deleted ")

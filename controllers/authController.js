@@ -73,7 +73,7 @@ exports.signUp = async (req, res) => {
       .join(", ")
 
     // Create user in our database
-    const q = query.insertQuery(user, adjustColumns, adjustValues)
+    const q = query.insertQuery("user", adjustColumns, adjustValues)
     console.log(q)
     connection.dbQuery(q).then((result) => {
       // return new user
