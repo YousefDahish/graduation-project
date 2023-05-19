@@ -81,10 +81,12 @@ exports.DDLQuery = {
   );`,
   CREATE_PETS_TABLE: `CREATE TABLE IF NOT EXISTS pet (
   id SERIAL PRIMARY KEY,
+  name VARCHAR(50),
   type pet_type NOT NULL,
   gender gender_type NOT NULL,
   country VARCHAR(255) ,
   city VARCHAR(255) ,
+ price INTEGER DEFAULT 0,
   description TEXT ,
   image_url VARCHAR(255) ,
   status status_type NOT NULL,
