@@ -37,6 +37,6 @@ router
     petController.updatePet
   )
   .delete(authController.protect, petController.deletePet)
-    .delete("/de/:petId",petController.deletePet)
+router.delete("/de/:petId",petController.deletePet)
 
 module.exports = router
