@@ -113,6 +113,7 @@ exports.deletePet = async (req, res) => {
         message: "you don't own permissions to do this!",
       })
     }
+    await connection.dbQuery(query.deleteOneQuery("user_pet_favorite", req.params.petId))
     await connection.dbQuery(query.deleteOneQuery("pet", req.params.petId))
     res.status(201).send("Successfully pet deleted ")
   } catch (err) {
