@@ -59,7 +59,7 @@ exports.signUp = async (req, res) => {
     if (
       await connection.isExistWhere(`user`, `email = '${adjustBody.email}'`)
     ) {
-      return res.status(409).send("email Already Exist. Please Login")
+      return res.status(409).send("This Email Already Exist")
     }
     //Encrypt user password
     const encryptedUserPassword = await bcrypt.hash(adjustBody.password, 10)

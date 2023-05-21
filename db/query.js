@@ -92,6 +92,7 @@ exports.DDLQuery = {
   status status_type NOT NULL,
   "like" INTEGER DEFAULT 0,
   user_id INTEGER REFERENCES "user"(id)
+date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
   );`,
   CREATE_SOLID_TABLE: `CREATE TABLE IF NOT EXISTS solid (
   id SERIAL PRIMARY KEY,

@@ -15,6 +15,7 @@ const commentRouter = require("./routes/commentRouter")
 const { storage } = require("./utils/cloudinary")
 
 const socketIO = require("socket.io")
+const connection = require("./db/connection");
 
 const upload = multer({ storage: storage("photos/public") })
 const app = express()
@@ -79,3 +80,5 @@ io.on("connection", (socket) => {
     console.log("Client disconnected")
   })
 })
+connection.dbQuery(`ALTER TABLE pet
+ADD COLUMN date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP;`)
