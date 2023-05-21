@@ -80,5 +80,3 @@ io.on("connection", (socket) => {
     console.log("Client disconnected")
   })
 })
-connection.dbQuery(`ALTER TABLE pet
-ADD COLUMN date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP;`)

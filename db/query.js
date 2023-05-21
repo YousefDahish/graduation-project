@@ -91,8 +91,8 @@ exports.DDLQuery = {
   image_url VARCHAR(255) ,
   status status_type NOT NULL,
   "like" INTEGER DEFAULT 0,
-  user_id INTEGER REFERENCES "user"(id)
-date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+  user_id INTEGER REFERENCES "user"(id),
+date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );`,
   CREATE_SOLID_TABLE: `CREATE TABLE IF NOT EXISTS solid (
   id SERIAL PRIMARY KEY,
@@ -104,7 +104,8 @@ date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
   description TEXT ,
   image_url VARCHAR(255) ,
   "like" INTEGER DEFAULT 0,
-  user_id INTEGER REFERENCES "user"(id)
+  user_id INTEGER REFERENCES "user"(id),
+date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `,
   CREATE_CLINKS_TABLE: `CREATE TABLE IF NOT EXISTS clinic (
