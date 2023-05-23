@@ -4,8 +4,8 @@ const validator = require("./../utils/validator")
 
 exports.getSolidList = async (req, res) => {
   try {
-    const result = await connection.dbQuery(query.selectAllQuery("solid"))
-    res.status(200).json({ status: "successful", data: result.rows })
+    const solidData = await connection.dbQuery(query.queryList.getSolidJoinUser)
+    res.status(200).json({ status: "successful", data: solidData.rows })
   } catch (err) {
     res.status(500).send({ error: "Failed to list solid" })
   }

@@ -56,7 +56,7 @@ exports.queryList = {
   UPDATE_COMMENT_QUERY: "UPDATE comment SET text=$1 WHERE id=$2 returning * ;",
 }
 exports.DDLQuery = {
-  CREATE_pet_type: "CREATE TYPE pet_type AS ENUM ('dog', 'cat', 'other');",
+  CREATE_pet_type: "CREATE TYPE pet_type AS ENUM ('dog', 'cat','fish','bird' 'other');",
   CREATE_gender_type: "CREATE TYPE gender_type AS ENUM ('male', 'female');  ",
   CREATE_role_type: "CREATE TYPE role_type AS ENUM ('user', 'admin');  ",
   CREATE_solid_type:
@@ -118,24 +118,24 @@ date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `,
   CREATE_User_Pet_TABLE: `CREATE TABLE IF NOT EXISTS User_Pet_favorite (
-  user_id INTEGER REFERENCES "user"(id),
-  pet_id INTEGER REFERENCES pet(id),
+  user_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE,
+  pet_id INTEGER REFERENCES pet(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, pet_id)
 );`,
   CREATE_User_Solid_TABLE: `CREATE TABLE IF NOT EXISTS User_Solid_favorite (
-  user_id INTEGER REFERENCES "user"(id),
-  Solid_ID INTEGER REFERENCES Solid(id),
-  PRIMARY KEY (user_id, Solid_ID)
+    user_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE,
+    Solid_ID INTEGER REFERENCES Solid(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, Solid_ID)
 );
 `,
   CREATE_COMMENTS_TABLE: `CREATE TABLE IF NOT EXISTS comment (
     id SERIAL PRIMARY KEY,
     text TEXT NOT NULL ,
     create_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    user_id INTEGER REFERENCES "user"(id) NOT NULL,
-    pet_id INTEGER REFERENCES pet(id) NOT NULL
+    user_id INTEGER REFERENCES "user"(id) NOT NULL ,
+    pet_id INTEGER REFERENCES pet(id) NOT NULL 
   );`,
-  CREATE_CHAT_TABLE: `CREATE TABLE messages (
+  CREATE_CHAT_TABLE: `CREATE TABLE IF NOT EXISTS messages (
   id SERIAL PRIMARY KEY,
   sender_id INTEGER REFERENCES "user"(id) NOT NULL,
   receiver_id INTEGER REFERENCES "user"(id) NOT NULL,
@@ -144,8 +144,8 @@ date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );`,
   CREATE_RATING_TABLE: `CREATE TABLE IF NOT EXISTS rating (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES "user"(id) NOT NULL,
-    clinic_id INTEGER REFERENCES clinic(id) NOT NULL,
+    user_id INTEGER REFERENCES "user"(id) NOT NULL ,
+    clinic_id INTEGER REFERENCES clinic(id) NOT NULL ,
     score INTEGER NOT NULL
   );`,
 }
