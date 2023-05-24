@@ -141,3 +141,14 @@ exports.addLike = async (req, res) => {
     })
   }
 }
+exports.getMyFavoritePet= async (req, res) => {
+  try {
+    const petData = await connection.dbQuery(query.queryList.getFavoriteJoinPet)
+    res.status(200).json({ status: "success", data: petData })
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: `some thing wend wrong: ${error.message}`,
+    })
+  }
+}

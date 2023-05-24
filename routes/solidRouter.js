@@ -9,6 +9,7 @@ const { storage } = require("./../utils/cloudinary")
 const upload = multer({ storage: storage("photos/pets") })
 
 router.post("/like", authController.protect, solidController.addLike)
+router.get("/favorit_solid",solidController.getMyFavoriteSolid)
 
 router
   .route("/mine")

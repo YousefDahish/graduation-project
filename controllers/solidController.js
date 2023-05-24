@@ -136,3 +136,14 @@ exports.addLike = async (req, res) => {
     })
   }
 }
+exports.getMyFavoriteSolid= async (req, res) => {
+  try {
+    const solidData = await connection.dbQuery(query.queryList.getFavoriteJoinSolid)
+    res.status(200).json({ status: "success", data: solidData })
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: `some thing wend wrong: ${error.message}`,
+    })
+  }
+}

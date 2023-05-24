@@ -9,6 +9,7 @@ const { storage } = require("./../utils/cloudinary")
 const upload = multer({ storage: storage("photos/pets") })
 
 router.route("/like").post(authController.protect, petController.addLike)
+router.get("/favorit_pet",petController.getMyFavoritePet)
 
 router
   .route("/mine")
@@ -37,5 +38,4 @@ router
     petController.updatePet
   )
   .delete(authController.protect, petController.deletePet)
-
 module.exports = router

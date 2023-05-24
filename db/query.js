@@ -45,6 +45,12 @@ exports.queryList = {
     from "solid" as s
     JOIN "user" as u ON s.user_id = u.id
     ORDER BY random();`,
+  getFavoriteJoinPet:`SELECT *
+    FROM pet
+    JOIN User_Pet_favorite ON pet.id = User_Pet_favorite.pet_id;`,
+  getFavoriteJoinSolid:`SELECT *
+    FROM solid
+    JOIN User_Solid_favorite ON solid.id = User_Solid_favorite.solid_id;`,
 
   SAVE_RATING_QUERY:
     "INSERT INTO rating (score,clinic_id,user_id ) VALUES ($1,$2,$3) returning *",
@@ -84,8 +90,8 @@ exports.DDLQuery = {
   name VARCHAR(50),
   type pet_type NOT NULL,
   gender gender_type NOT NULL,
-  country VARCHAR(255) ,
-  city VARCHAR(255) ,
+ country varchar(10) DEFAULT 'Egypt' ,
+  city VARCHAR(50) ,
  price INTEGER DEFAULT 0,
   description TEXT ,
   image_url VARCHAR(255) ,
@@ -98,8 +104,8 @@ date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   type solid_type NOT NULL,
-  price DECIMAL(10, 2) NOT NULL,
-  country VARCHAR(255) ,
+  price INTEGER NOT NULL,
+ country varchar(10) DEFAULT 'Egypt' ,
   city VARCHAR(255) ,
   description TEXT ,
   image_url VARCHAR(255) ,
