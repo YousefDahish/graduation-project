@@ -34,6 +34,7 @@ exports.queryList = {
   getPetJoinUser: `SELECT p.*,
     u.name as user_name,
     u.image_url as user_image,
+    u.phone as user_phone,
     'pet' as table_name
     from "pet" as p
     JOIN "user" as u ON p.user_id = u.id
@@ -41,6 +42,7 @@ exports.queryList = {
   getSolidJoinUser: `SELECT s.*,
     u.name as user_name,
     u.image_url as user_image,
+    u.phone as user_phone,
     'solid' as table_name
     from "solid" as s
     JOIN "user" as u ON s.user_id = u.id
