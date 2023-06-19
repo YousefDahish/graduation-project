@@ -143,7 +143,7 @@ exports.getMyFavoriteSolid= async (req, res) => {
   } catch (error) {
     res.status(400).json({
       status: "fail",
-      message: `some thing wend wrong: ${error.message}`,
+      message: `something wrong: ${error.message}`,
     })
   }
 }

@@ -6,7 +6,7 @@ exports.getPetList = async (req, res) => {
     const petData = await connection.dbQuery(query.queryList.getPetJoinUser)
     res.status(200).json({ status: "successful", data: petData })
   } catch (err) {
-    res.status(400).send({ error: `Failed to list pet; ${err.message}` })
+    res.status(400).send({ error: `Failed to list pets; ${err.message}` })
   }
 }
 exports.getUserPets = async (req, res) => {
@@ -23,7 +23,7 @@ exports.getUserPets = async (req, res) => {
   } catch (err) {
     res
       .status(400)
-      .json({ status: "fail", message: `can not get comments: ${err.message}` })
+      .json({ status: "fail", message: `can not get Pets: ${err.message}` })
   }
 }
 exports.getPet = async (req, res) => {
@@ -40,7 +40,7 @@ exports.getPet = async (req, res) => {
   } catch (err) {
     res
       .status(400)
-      .json({ status: "fail", message: `Failed to get pets:${err.message}` })
+      .json({ status: "fail", message: `Failed to get pet:${err.message}` })
   }
 }
 
@@ -148,7 +148,7 @@ exports.getMyFavoritePet= async (req, res) => {
   } catch (error) {
     res.status(400).json({
       status: "fail",
-      message: `some thing wend wrong: ${error.message}`,
+      message: `something wrong: ${error.message}`,
     })
   }
 }

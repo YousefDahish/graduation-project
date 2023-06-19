@@ -35,7 +35,7 @@ exports.addUser = async (req, res) => {
       return res.status(400).send("All input is required")
     }
     if (adjustBody.password !== adjustBody.password_confirm) {
-      return res.status(400).json({
+      return res.status(500).json({
         status: "fail",
         message: "password and password confirm not matched",
       })
@@ -120,7 +120,7 @@ exports.getHome = async (req, res, next) => {
   } catch (error) {
     res.status(400).json({
       status: "fail",
-      message: `some thing wend wrong: ${error.message}`,
+      message: `something wrong: ${error.message}`,
     })
   }
 }
