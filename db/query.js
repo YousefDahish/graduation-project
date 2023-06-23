@@ -1,3 +1,4 @@
+const {values} = require("pg/lib/native/query");
 exports.queryList = {
   // pets
   GET_PET_LIST_QUERY: `SELECT * FROM pet`,
@@ -143,13 +144,6 @@ date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     user_id INTEGER REFERENCES "user"(id) NOT NULL ,
     pet_id INTEGER REFERENCES pet(id) NOT NULL 
   );`,
-  CREATE_CHAT_TABLE: `CREATE TABLE IF NOT EXISTS messages (
-  id SERIAL PRIMARY KEY,
-  sender_id INTEGER REFERENCES "user"(id) NOT NULL,
-  receiver_id INTEGER REFERENCES "user"(id) NOT NULL,
-  message_text TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
-);`,
   CREATE_RATING_TABLE: `CREATE TABLE IF NOT EXISTS rating (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES "user"(id) NOT NULL ,
@@ -169,7 +163,15 @@ exports.deleteOneQuery = (table, id) =>
 
 exports.deleteWhereQuery = (table, where) =>
   `DELETE FROM "${table}" WHERE ${where}`
-
+  exports.deleteWhere2 = (table, where1, where2, values) =>
+      `DELETE FROM ${table} WHERE ${where1} = ${values[0]} AND ${where2} = ${values[1]};`;
+exports.upsertQuery = (table, fields, values) => {
+  const query = `INSERT INTO ${table} (${fields})
+                 VALUES (${values})
+                 ON CONFLICT (user_id, pet_id)
+                 DO UPDATE SET user_id = EXCLUDED.user_id, pet_id = EXCLUDED.pet_id`;
+  return query;
+}
 exports.insertQuery = (table, fields, values) =>
   `INSERT INTO "${table}" (${fields}) VALUES (${values}) returning * ;`
 

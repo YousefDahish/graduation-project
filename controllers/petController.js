@@ -141,6 +141,40 @@ exports.addLike = async (req, res) => {
     })
   }
 }
+exports.deleteLike = async (req, res) => {
+  req.body.user_id = req.user.id
+  try {
+    // Check if the user has already liked the pet
+    const checkLike = await connection.dbQuery(
+        `SELECT * FROM user_pet_favorite WHERE user_id = '${req.user.id}' AND pet_id = '${req.body.pet_id}'`
+    );
+    if (checkLike.rows.length === 0) {
+      return res.status(400).json({
+        status: "fail",
+        message: "User has not liked this pet before",
+      });
+    }
+
+    // If the user has liked the pet before, delete the like
+    const pet = await connection.dbQuery(
+        `UPDATE pet SET "like" = "like" - 1 WHERE id = '${req.body.pet_id}' RETURNING *`
+    );
+    const like = pet.rows[0]
+    const q = query.deleteWhere2(
+        "user_pet_favorite",
+        "user_id",
+        "pet_id",
+        [req.user.id, req.body.pet_id]
+    );
+    await connection.dbQuery(q)
+    res.status(200).json({ status: "success like removed", data: like })
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: `can't delete like : ${error.message}`,
+    })
+  }
+}
 exports.getMyFavoritePet= async (req, res) => {
   try {
     const petData = await connection.dbQuery(query.queryList.getFavoriteJoinPet)

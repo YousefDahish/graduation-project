@@ -57,77 +57,8 @@ app.use("/upload-image", upload.single("image"), (req, res, next) => {
 app.use("/home", (req, res) => {
   res.redirect("/user/home")
 })
-///////
-const WebSocket = require('ws');
 
-const socket = new WebSocket('ws://localhost:3222');
-
-socket.on('open', () => {
-  console.log('WebSocket connection opened');
-});
-
-socket.on('message', (data) => {
-  console.log(`Received message: ${data}`);
-});
-
-socket.on('close', (code, reason) => {
-  console.log(`WebSocket connection closed with code ${code} and reason ${reason}`);
-});
-
-socket.on('error', (error) => {
-  console.error('WebSocket error', error);
-
-  if (error.code === 'ECONNRESET') {
-    // Handle the socket hang up error
-    console.log('WebSocket connection terminated unexpectedly');
-  }
-});
-
-const server = app.listen(3222, async () => {
+app.listen(3222, async () => {
   await validator.isAdminExistAndCreateIt()
   console.log(`server working on port ${3222}....`)
 })
-
-const io = socketIO(server);
-io.on('connection', (socket) => {
-  console.log('Client connected');
-
-  // Handle incoming messages
-  socket.on('message', (data) => {
-    console.log(`Received message: ${data}`);
-    // Broadcast the message to all connected clients
-    socket.broadcast.emit('message', data);
-  });
-
-  // Handle disconnection
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
-});
-
-app.post('/messages', (req, res) => {
-
-  const { senderId, receiverId, messageText } = req.body;
-  const createdAt = new Date();
-  const query = 'INSERT INTO messages (sender_id, receiver_id, message_text, created_at) VALUES ($1, $2, $3, $4)';
-  let values;
-  if (senderId) {
-    values = [senderId, receiverId, messageText, createdAt];
-  } else {
-    values = [null, receiverId, messageText, createdAt];
-  }
-
-  connection.dbQuery(query, values, (error, result) => {
-    if (error) {
-      console.error(error);
-      res.status(500).send('Error sending message');
-    } else {
-      res.status(200).send('Message sent successfully');
-    }
-  });
-});
-//
-// app.listen(3222, async () => {
-//   await validator.isAdminExistAndCreateIt()
-//   console.log(`server working on port ${3222}....`)
-// })
