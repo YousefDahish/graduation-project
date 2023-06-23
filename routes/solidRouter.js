@@ -5,10 +5,12 @@ const authController = require("./../controllers/authController")
 const multer = require("multer")
 
 const { storage } = require("./../utils/cloudinary")
+const petController = require("../controllers/petController");
 
 const upload = multer({ storage: storage("photos/pets") })
 
 router.post("/like", authController.protect, solidController.addLike)
+router.route("/delete_like").post(authController.protect, solidController.deleteLike)
 router.get("/favorit_solid",solidController.getMyFavoriteSolid)
 
 router
