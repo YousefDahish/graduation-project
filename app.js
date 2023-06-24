@@ -32,17 +32,7 @@ app.use((req, res, next) => {
   }
   next()
 })
-app.options("/your-route", (req, res) => {
-  res.set("Access-Control-Allow-Origin", "*");
-  res.set("Access-Control-Allow-Methods", "PATCH");
-  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-  res.sendStatus(200);
-});
-
-app.patch("/your-route", (req, res) => {
-  // Your patch route handler code here
-});
 app.use(cors)
 app.use(body_parser.urlencoded({ extended: false }))
 app.use(body_parser.json())
