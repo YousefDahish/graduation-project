@@ -114,7 +114,7 @@ exports.deletePet = async (req, res) => {
       })
     }
     await connection.dbQuery(query.deleteOneQuery("pet", req.params.petId))
-    res.status(201).send("Successfully pet deleted ")
+    res.status(200).send("Successfully pet deleted ")
   } catch (err) {
     res.status(500).send({ error: `Failed to delete pet ${err.message}` })
   }
