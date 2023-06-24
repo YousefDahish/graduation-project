@@ -14,31 +14,17 @@ const ratingRouter = require("./routes/ratingRouter")
 const commentRouter = require("./routes/commentRouter")
 
 const { storage } = require("./utils/cloudinary")
+const cors = require("cors");
 
 const connection = require("./db/connection");
 
 const upload = multer({ storage: storage("photos/public") })
 const app = express()
 
-app.options("*", (req, res) => {
-  res.set("Access-Control-Allow-Origin", req.get("origin"));
-  res.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.sendStatus(200);
-});
-
-app.use((req, res, next) => {
-  res.set("Access-Control-Allow-Origin", "*")
-  res.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
-  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200)
-  }
-  next()
-})
 app.use(morgan("dev"))
 
 app.use((req, res, next) => {
+  res.set("Access-Control-Allow-Origin", "https://graduation-server.onrender.com/");
   res.set("Access-Control-Allow-Origin", "*")
   res.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
   res.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
@@ -47,7 +33,7 @@ app.use((req, res, next) => {
   }
   next()
 })
-
+app.use(cors)
 app.use(body_parser.urlencoded({ extended: false }))
 app.use(body_parser.json())
 
