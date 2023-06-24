@@ -20,16 +20,22 @@ const connection = require("./db/connection");
 const upload = multer({ storage: storage("photos/public") })
 const app = express()
 
-res.set("Access-Control-Allow-Origin", req.get("origin"))
-const cors = require("cors");
-
-app.use(cors());
 app.options("*", (req, res) => {
   res.set("Access-Control-Allow-Origin", req.get("origin"));
   res.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
   res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.sendStatus(200);
 });
+
+app.use((req, res, next) => {
+  res.set("Access-Control-Allow-Origin", "*")
+  res.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
+  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200)
+  }
+  next()
+})
 app.use(morgan("dev"))
 
 app.use((req, res, next) => {
